@@ -11,7 +11,7 @@ BUILD_CONF           = $(GENODE_BUILD_DIR)/etc/build.conf
 
 .PHONY: all toolchain ports genode genode_build_dir clean
 
-all: toolchain foc genode_build_dir genode
+all: toolchain ports genode_build_dir genode
 
 toolchain:
 	mkdir -p $(TOOLCHAIN_BUILD_DIR)

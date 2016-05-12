@@ -1,5 +1,5 @@
 TARGET = simcom_sim
-SRC_CC = main.cc
+SRC_CC = main_new.cc
 LIBS   = base lwip libc stdcxx
 REQUIRES = foc
 

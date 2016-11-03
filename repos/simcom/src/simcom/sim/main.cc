@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
 	static Timer::Connection timer;
 	lwip_tcpip_init();
 
-	char serv_addr[] = "192.168.1.100";
+	char serv_addr[] = "10.0.2.5";
 
 	if(lwip_nic_init(0, 0, 0, BUF_SIZE, BUF_SIZE))
 	{

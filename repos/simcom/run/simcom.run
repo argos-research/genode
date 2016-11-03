@@ -35,15 +35,15 @@ install_config {
 		<any-service> <parent/> <any-child/> </any-service>
 	</default-route>
 	<start name="gpio_drv">
-		<resource name="RAM" quantum="4M"/>
+		<resource name="RAM" quantum="8M"/>
 		<provides><service name="Gpio"/></provides>
 	</start>
 	<start name="timer">
-		<resource name="RAM" quantum="1M"/>
+		<resource name="RAM" quantum="2M"/>
 		<provides><service name="Timer"/></provides>
 	</start>
 	<start name="usb_drv">
-		<resource name="RAM" quantum="7M"/>
+		<resource name="RAM" quantum="32M"/>
 		<provides>
 			<service name="Usb"/>
 			<service name="Nic"/>
@@ -59,12 +59,12 @@ install_config {
 	</start>
 	<start name="simcom_ecu">
 		<binary name="simcom_ecu"/>
-		<resource name="RAM" quantum="1M"/>
+		<resource name="RAM" quantum="160M"/>
 		<provides><service name="SimCom"/></provides>
 	</start>
 	<start name="simcom_sim">
 		<binary name="simcom_sim"/>
-		<resource name="RAM" quantum="1M"/>
+		<resource name="RAM" quantum="160M"/>
 	</start>
 </config>}
 

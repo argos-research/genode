@@ -6,6 +6,7 @@ build {
 	core init
 	simcom/sim
         simcom/ecu
+	
 	drivers/timer
         drivers/nic
 }
@@ -33,24 +34,26 @@ install_config {
 		<any-service> <parent/> <any-child/> </any-service>
 	</default-route>
 	<start name="timer">
-		<resource name="RAM" quantum="1M"/>
+		<resource name="RAM" quantum="2M"/>
 		<provides><service name="Timer"/></provides>
 	</start>
 	<start name="nic_drv">
-		<resource name="RAM" quantum="4M"/>
+		<resource name="RAM" quantum="32M"/>
 		<provides>
 			<service name="Nic"/>
 		</provides>
 	</start>
         <start name="simcom_ecu">
                 <binary name="simcom_ecu"/>
-                <resource name="RAM" quantum="1M"/>
+                <resource name="RAM" quantum="160M"/>
                 <provides><service name="SimCom"/></provides>
         </start>
 	<start name="simcom_sim">
 		<binary name="simcom_sim"/>
-		<resource name="RAM" quantum="1M"/>
+		<resource name="RAM" quantum="160M"/>
 	</start>
+
+
 </config>}
 
 #

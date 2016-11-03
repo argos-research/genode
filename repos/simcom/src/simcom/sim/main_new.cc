@@ -14,11 +14,14 @@
 #include <lwip/api.h>
 #include <lwip/genode.h>
 #include <simcom/types.h>
+#include <simcom/GenericPacket.h>
+#include <simcom/packettypes.h>
 
 float g_distThreshold = 50.0; //50m
 float g_followDist = 10.0; // 10m
 float g_maxAccel = 1.5;
 float g_maxBrake = 1.0;
+
 
 int getSpeedDepGear(float speed, int currentGear);
 CommandDataOut followDriving(SensorDataIn sd);
@@ -133,6 +136,11 @@ int main(int argc, char* argv[])
 	PDBG("Hello, SimCom-Sim!\n");
 	// Mostly copied from libports/src/test/lwip/http_clnt
 
+
+
+	GenericPacket psend(4096);
+	GenericPacket precv(4096);
+
 	enum { BUF_SIZE = Nic::Packet_allocator::DEFAULT_PACKET_SIZE * 128 };
 
         //	SimCom::Connection ecu;
@@ -141,13 +149,13 @@ int main(int argc, char* argv[])
 	static Timer::Connection timer;
 	lwip_tcpip_init();
 
-	char serv_addr[] = "10.0.2.55";
-
-//        if(lwip_nic_init(0, 0, 0, BUF_SIZE, BUF_SIZE))
-        if(lwip_nic_init(inet_addr("10.0.2.53"), // ip
-                         inet_addr("255.255.255.0"), // subnet mask
-                         0, // gw
-                         BUF_SIZE, BUF_SIZE))
+	if(lwip_nic_init(0, 0, 0, BUF_SIZE, BUF_SIZE))
+	//if(
+		//lwip_nic_init(inet_addr("10.0.3.5"), // ip
+		//lwip_nic_init(inet_addr("10.0.2.5"), // ip
+		//inet_addr("255.255.255.0"), // subnet mask
+		//0, // gw
+		//BUF_SIZE, BUF_SIZE))
 	{
 		PERR("We got no IP address!");
 		return 0;
@@ -159,98 +167,172 @@ int main(int argc, char* argv[])
 		PDBG("Connection attempt %d\n", j + 1);
 
 		PDBG("Create new socket ...");
-		int s = lwip_socket(AF_INET, SOCK_STREAM, 0 );
-		if (s < 0) {
+		int sockfd = lwip_socket(AF_INET, SOCK_STREAM, 0 );
+		if (sockfd < 0) {
 			PERR("No socket available!");
 			continue;
 		}
 
-		PDBG("Connect to server ...");
-		struct sockaddr_in addr;
-		addr.sin_port = htons(9000);
-		addr.sin_family = AF_INET;
-		addr.sin_addr.s_addr = inet_addr(serv_addr);
-
-		if((lwip_connect(s, (struct sockaddr *)&addr, sizeof(addr))) < 0) {
-			PERR("Could not connect!");
-			lwip_close(s);
+		PDBG("Create new socket to Beaglebone...");
+		int sock2fd = lwip_socket(AF_INET, SOCK_STREAM, 0);
+		if (sock2fd < 0) {
+			PERR("No socket available!");
 			continue;
 		}
 
-		PDBG("Connected successfully. Starting communication loop.\n");
-		char buf[1024];
-		CommandDataOut commandData = {0};
-		SensorDataIn* pSensorDataIn = nullptr;
-		SensorDataOut sensorDataOut = {0};
-		const size_t outSize = 2 + sizeof(CommandDataOut) + sizeof(SensorDataOut) + 1;
-		const size_t inSize = 2 + sizeof(SensorDataIn) + 1;
-		char checksum = 0;
-		char format[512];
-		bool alive = true;
-		//ecu.set_command_data(commandData);
-		while (alive)
-		{
-			// sensorDataOut = ecu.get_sensor_data();
-			// Send Data.
-			buf[0] = 0xaa;
-			buf[1] = 0xcc;
-			memcpy(&buf[2], &commandData, sizeof(CommandDataOut));
-			memcpy(&buf[2]+sizeof(CommandDataOut), &sensorDataOut, sizeof(sensorDataOut));
-			checksum = 0xaa ^ 0xcc;
-			for (size_t i = 2; i < outSize - 1; ++i)
-			{
-				checksum ^= buf[i];
-			}
-			buf[outSize - 1] = checksum;
+		PDBG("Waiting for clients  ...");
+		struct sockaddr_in qemu_addr;
+		qemu_addr.sin_port = htons(8000);
+		qemu_addr.sin_family = AF_INET;
+		qemu_addr.sin_addr.s_addr = INADDR_ANY;
 
-			//PDBG("Sending sensor and command data...\n");
-			unsigned long bytes = lwip_send(s, buf, outSize, 0);
-			if (bytes < outSize) {
-				PERR("Couldn't send package...");
-				lwip_close(s);
-				alive = false;
-				continue;
-			}
 
-			// Receive Sensor Data.
-			bytes = lwip_recv(s, buf, inSize, 0);
-			if (bytes < inSize) {
-				PERR("Couldn't receive package...");
-				lwip_close(s);
-				alive = false;
-				continue;
-			}
+		if ((lwip_bind(sockfd, (struct sockaddr *)&qemu_addr, sizeof(qemu_addr))) < 0) {
+			PERR("Could not connect!");
+		 	lwip_close(sockfd);
+		 	continue;
+		}
+		
+		
+		lwip_listen(sockfd,5);
+		socklen_t addr_len = sizeof(qemu_addr);
+		int newsockfd = lwip_accept(sockfd, (struct sockaddr *) &qemu_addr, &addr_len);
 
-			// // Sanity checks
-			// if (buf[0] != 0xaa || buf[1] != 0xcc)
-			// {
-			// 	PDBG("Error: Incorrect package header. Received 0x%x%x Expected \"0xaacc\".", buf[0], buf[1]);
-			// 	alive = false;
-			// 	continue;
-			// }
-			// checksum = 0xaa ^ 0xcc;
-			// for (size_t i = 2; i < inSize - 1; ++i)
-			// {
-			// 	checksum ^= buf[i];
-			// }
-			// if (buf[inSize - 1] != checksum)
-			// {
-			// 	PDBG("Error: Invalid checksum %d, expected %d", checksum, buf[inSize - 1]);
-			// 	alive = false;
-			// 	continue;
-			// }
 
-			// pSensorDataIn = (SensorDataIn*)&buf[2];
-			// //sprintf(format, "Sensor Data received. Position: %f %f\n", pSensorDataIn->ownPos.x, pSensorDataIn->ownPos.y);
-			// //PDBG("%s", format);
+		struct sockaddr_in beagle_addr;
+		beagle_addr.sin_port = htons(5000);
+		beagle_addr.sin_family = AF_INET;
+		//beagle_addr.sin_addr.s_addr = inet_addr("10.0.1.209");
+		//beagle_addr.sin_addr.s_addr = inet_addr("10.0.2.209");
+		beagle_addr.sin_addr.s_addr = INADDR_ANY;
 
-			// // Calculate following.
-			// commandData = followDriving(*pSensorDataIn);
-			// ecu.set_command_data(*pSensorDataIn);
+		PDBG("Connect to Beaglebone...");
+		if ((lwip_bind(sock2fd, (struct sockaddr *)&beagle_addr, sizeof(beagle_addr))) < 0) {
+			PERR("Could not connect!");
+			lwip_close(sock2fd);
+			continue;
 		}
 
+
+		lwip_listen(sock2fd,5);
+		addr_len = sizeof(beagle_addr);
+		int newsock2fd = lwip_accept(sock2fd, (struct sockaddr *) &beagle_addr, &addr_len);
+
+
+		PDBG("Connected! GoGo");
+		//Please comment out if you are using debug messages for debugging
+		PDBG("Only shows error notes because of performance issues!");
+
+		bool alive = true;
+		
+
+		while (alive)
+		{
+			long bytes;
+			//Data Communication to QEMUSAVM
+			
+			precv.clear();
+			bytes = lwip_recv(newsockfd,precv.getPacketPtr(), 4096, 0);
+			if (bytes<precv.getPacketLength()){
+				PDBG("Error: Packet receive from qemu not complete!");
+				continue;
+			}
+
+			switch (precv.getPacketType()){
+				case packettype_data_to_simcom:
+				{
+					
+				
+					float brake = 42;
+				 	precv.get(&brake, sizeof(float));
+				    float brakeFL = 42;
+					precv.get(&brakeFL, sizeof(float));
+					float brakeFR = 42;
+					precv.get(&brakeFR, sizeof(float));
+					float brakeRL = 42;
+					precv.get(&brakeRL, sizeof(float));
+					float brakeRR = 42;
+					precv.get(&brakeRR, sizeof(float));
+					
+
+					float speed = 0.0;
+					precv.get(&speed, sizeof(float));
+					//PDBG("Speed = %d", (int)speed);
+
+					int gear = 0;
+					precv.get(&gear, sizeof(int));
+
+					//PDBG("Gear = %d", gear);
+
+					gear = getSpeedDepGear(speed, gear);
+		//			PDBG("Gear after function call = %d", gear);
+
+					//Sending gear to pululu
+					psend.clear();
+					psend.setPacketType(packettype_send_gear);
+					
+					PDBG("%d", sizeof(float));
+				    psend.add(&brake, sizeof(float));
+				    psend.add(&brakeFL, sizeof(float));
+				    psend.add(&brakeFR, sizeof(float));
+				    psend.add(&brakeRL, sizeof(float));
+				    psend.add(&brakeRR, sizeof(float));
+				    psend.add(&gear, sizeof(int));
+					
+					/*
+					 PDBG("Brake is %d", (int) (brake * 2000));
+					 PDBG("BrakeFL is %d", (int) (brakeFL * 2000));
+					 PDBG("BrakeFR is %d", (int) (brakeFR * 2000));
+					 PDBG("BrakeRL is %d", (int) (brakeRL * 2000));
+					 PDBG("BrakeRR is %d", (int) (brakeRR * 2000));
+					*/
+				    
+					//PDBG("Sending gear to Pululu....");
+					bytes = lwip_send(newsock2fd, psend.getPacketPtr(), psend.getPacketLength(), 0);
+					if (bytes<psend.getPacketLength()){
+						PERR("Packet not send correctly");
+						continue;
+					}
+					//PDBG("Send Done!");
+
+					//receiving answer from polulu
+					precv.clear();
+					bytes = lwip_recv(newsock2fd,precv.getPacketPtr(), 4096, 0);
+					if (bytes<precv.getPacketLength()){
+						PDBG("Error: Packet receive from beagle  not complete!");
+						continue;
+					}
+
+					//Sending answer to Qemusavm
+					psend.clear();
+					psend.setPacketType(packettype_send_gear);
+					psend.add(&gear, sizeof(gear));
+
+					//PDBG("Sending gear to QEMUSAVM....");
+					bytes = lwip_send(newsockfd, psend.getPacketPtr(), psend.getPacketLength(), 0);
+					if (bytes<psend.getPacketLength()){
+						PERR("Packet not send correctly");
+						continue;
+					}
+					//PDBG("Send Done!");
+
+					break;
+				}
+
+				default:
+				{
+					PDBG("Unbekannter Pakettyp: %i", precv.getPacketType());
+					psend.setPacketType(packettype_undefined);
+				}
+
+			}
+
+		}
+
+
 		/* Close socket */
-		lwip_close(s);
+		lwip_close(sock2fd);
+		lwip_close(sockfd);
 	}
 
 

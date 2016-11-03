@@ -19,6 +19,11 @@ struct SensorDataIn
     float ownSpeed;
     int curGear;
     float steerLock;
+    float brake;
+    float brakeFL; //Front left
+    float brakeFR; //Front right
+    float brakeRL; //Rear left
+    float brakeRR; //Rear right
 };
 
 struct SensorDataOut

@@ -21,7 +21,7 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-	lwip_tcpip_init();
+	//lwip_tcpip_init(); causes freeze, code works fine without it
 
 	enum { BUF_SIZE = Nic::Packet_allocator::DEFAULT_PACKET_SIZE * 128 };
 

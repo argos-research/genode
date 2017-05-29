@@ -1,0 +1,35 @@
++++ src/lib/libmosquitto/lib/net_mosq.c
+@@ -1172,7 +1172,6 @@ int _mosquitto_socket_nonblock(mosq_sock_t sock)
+ #ifndef WITH_BROKER
+ int _mosquitto_socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
+ {
+-#ifdef WIN32
+ 	int family[2] = {AF_INET, AF_INET6};
+ 	int i;
+ 	struct sockaddr_storage ss;
+@@ -1278,25 +1277,5 @@ int _mosquitto_socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
+ 		return MOSQ_ERR_SUCCESS;
+ 	}
+ 	return MOSQ_ERR_UNKNOWN;
+-#else
+-	int sv[2];
+-
+-	if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) == -1){
+-		return MOSQ_ERR_ERRNO;
+-	}
+-	if(_mosquitto_socket_nonblock(sv[0])){
+-		COMPAT_CLOSE(sv[0]);
+-		COMPAT_CLOSE(sv[1]);
+-		return MOSQ_ERR_ERRNO;
+-	}
+-	if(_mosquitto_socket_nonblock(sv[1])){
+-		COMPAT_CLOSE(sv[0]);
+-		COMPAT_CLOSE(sv[1]);
+-		return MOSQ_ERR_ERRNO;
+-	}
+-	*pairR = sv[0];
+-	*pairW = sv[1];
+-	return MOSQ_ERR_SUCCESS;
+-#endif
+ }
+ #endif

@@ -1,0 +1,8 @@
+LICENSE   := Eclipse
+VERSION   := git
+DOWNLOADS := mosquitto.git
+
+URL(mosquitto) := https://github.com/eclipse/mosquitto.git
+DIR(mosquitto) := src/app/mosquitto/src
+REV(mosquitto) := 51bfdc9ed48ec3317280fe17d8b2b7dc66a1c349
+

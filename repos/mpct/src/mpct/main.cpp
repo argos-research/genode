@@ -6,7 +6,6 @@
 #include <base/printf.h>
 #include <util/xml_node.h>
 #include <os/config.h>
-#include <timer_session/connection.h>
 
 /* lwip includes */
 extern "C" {
@@ -68,13 +67,24 @@ private:
 };
 
 int main(int argc, char* argv[]) {
-	//lwip_tcpip_init(); causes freeze, code works fine without it
+	//lwip_tcpip_init(); /* causes freeze, code works fine without it */
 
 	enum { BUF_SIZE = Nic::Packet_allocator::DEFAULT_PACKET_SIZE * 128 };
 
 	Genode::Xml_node network = Genode::config()->xml_node().sub_node("network");
 
-	if (network.attribute_value<bool>("dhcp", false)) {
+	if (network.attribute_value<bool>("dhcp", true)) {
+		PDBG("DHCP network...");
+		if (lwip_nic_init(0,
+											0,
+											0,
+											BUF_SIZE,
+											BUF_SIZE)) {
+			PERR("lwip init failed!");
+			return 1;
+		}
+		PDBG("done");
+	} else {
 		PDBG("manual network...");
 		char ip_addr[16] = {0};
 		char subnet[16] = {0};
@@ -87,17 +97,6 @@ int main(int argc, char* argv[]) {
 		if (lwip_nic_init(inet_addr(ip_addr),
 											inet_addr(subnet),
 											inet_addr(gateway),
-											BUF_SIZE,
-											BUF_SIZE)) {
-			PERR("lwip init failed!");
-			return 1;
-		}
-		PDBG("done");
-	} else {
-		PDBG("DHCP network...");
-		if (lwip_nic_init(0,
-											0,
-											0,
 											BUF_SIZE,
 											BUF_SIZE)) {
 			PERR("lwip init failed!");
@@ -121,22 +120,7 @@ int main(int argc, char* argv[]) {
 	PDBG("done");
 
 	/* endless loop with auto reconnect */
-	mpct->loop_start();
-
-
-	Timer::Connection timer;
-
-	while(1) {
-		timer.msleep(500);
-	};
-	/*int loop;
-	while(1) {
-		loop = mpct->loop();
-		if (loop != MOSQ_ERR_SUCCESS) {
-			PDBG("reconnect!");
-			mpct->reconnect();
-		}
-	}*/
+	mpct->loop_forever();
 
 	/* cleanup */
 	mosqpp::lib_cleanup();

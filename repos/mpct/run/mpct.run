@@ -43,7 +43,7 @@ set config {
     <start name="mpct">
         <resource name="RAM" quantum="4M"/>
 				<config>
-            <network dhcp="yes" ip-address="192.168.100.42" subnet-mask="255.255.255.0" default-gateway="192.168.100.254" />
+            <network dhcp="no" ip-address="192.168.100.42" subnet-mask="255.255.255.0" default-gateway="192.168.100.254" />
             <mosquitto ip-address="192.168.100.254" port="1883" />
         </config>
     </start>}

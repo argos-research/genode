@@ -22,9 +22,9 @@ INC_DIR += $(LIBMOSQUITTO_DIR) $(LIBMOSQUITTO_DIR)/lib $(LIBMOSQUITTO_DIR)/lib/c
 
 SRC_CC = $(addprefix $(LIBMOSQUITTO_DIR)/lib/, $(SRC_LIBMOSQUITTO)) $(LIBMOSQUITTO_DIR)/lib/cpp/mosquittopp.cpp
 
-LIBS += libc libc_lwip lwip pthread stdcxx
+LIBS += libc libc_lwip lwip pthread stdcxx libssl
 
-CC_DEF += -DWITH_THREADING -DHAVE_PSELECT
+CC_DEF += -DWITH_THREADING -DHAVE_PSELECT -DWITH_TLS
 
 SHARED_LIB = yes
 

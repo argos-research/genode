@@ -1,7 +1,8 @@
 [submodule "repos/cap_cr"]
 	path = repos/cap_cr
 	url = https://github.com/ljtum/cap_cr.git
+	branch = master
 [submodule "repos/rtcr"]
 	path = repos/rtcr
 	url = https://github.com/ljtum/rtcr.git
-	branch = fr_multicore_incremental
+	branch = cap_cr

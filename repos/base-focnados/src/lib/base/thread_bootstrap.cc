@@ -19,6 +19,7 @@
 #include <foc/native_capability.h>
 #include <foc_native_pd/client.h>
 #include <base/env.h>
+#include <base/printf.h> // lj
 
 /* base-internal includes */
 #include <base/internal/native_utcb.h>
@@ -33,6 +34,8 @@ void prepare_init_main_thread()
 {
 	using namespace Genode;
 	enum { THREAD_CAP_ID = 1 };
+	PLOG("[lj][thread_bootstrap.cc::prepare_init_main_thread]");
+//	Genode::raw("[lj][thread_bootstrap.cc::prepare_init_main_thread] Inserting MAIN_THREAD_CAP (", Hex(THREAD_CAP_ID), ", ", Hex(Fiasco::MAIN_THREAD_CAP), ")");
 	Cap_index * ci(cap_map()->insert(THREAD_CAP_ID, Fiasco::MAIN_THREAD_CAP));
 	Fiasco::l4_utcb_tcr()->user[Fiasco::UTCB_TCR_BADGE] = (unsigned long)ci;
 	Fiasco::l4_utcb_tcr()->user[Fiasco::UTCB_TCR_THREAD_OBJ] = 0;

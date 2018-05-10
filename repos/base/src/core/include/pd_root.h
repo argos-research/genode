@@ -37,6 +37,8 @@ class Genode::Pd_root : public Genode::Root_component<Genode::Pd_session_compone
 
 		Pd_session_component *_create_session(const char *args)
 		{
+			log("[lj][core][Pd_root::_create_session] Creating Pd_session_component...");
+
 			/* XXX use separate entrypoint for PD sessions */
 			return new (md_alloc()) Pd_session_component(_thread_ep,
 			                                             _thread_ep,

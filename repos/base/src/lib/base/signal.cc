@@ -19,6 +19,7 @@
 #include <base/sleep.h>
 #include <base/trace/events.h>
 #include <util/volatile_object.h>
+#include <base/printf.h> // lj
 
 /* base-internal includes */
 #include <base/internal/globals.h>
@@ -41,6 +42,8 @@ class Signal_handler_thread : Thread, Lock
 
 		void entry()
 		{
+			PLOG("[lj][Signal_handler_thread::entry] Constructing signal_source");
+
 			_signal_source.construct(env()->pd_session()->alloc_signal_source());
 			unlock();
 			Signal_receiver::dispatch_signals(&(*_signal_source));
@@ -56,6 +59,7 @@ class Signal_handler_thread : Thread, Lock
 		Signal_handler_thread(Env &env)
 		: Thread(env, "signal handler", STACK_SIZE), Lock(Lock::LOCKED)
 		{
+			PLOG("[lj][Signal_handler_thread::ctor] Starting signal handler thread...");
 			start();
 
 			/*
@@ -99,6 +103,7 @@ namespace Genode {
 	void init_signal_thread(Env &env) __attribute__((weak));
 	void init_signal_thread(Env &env)
 	{
+		PLOG("[lj][signal.cc::init_signal_thread]");
 		signal_handler_thread().construct(env);
 	}
 

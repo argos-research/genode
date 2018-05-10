@@ -149,6 +149,8 @@ class Genode::Capability_space_tpl
 
 			addr_t const index = _alloc.alloc();
 
+			log("[lj][Native_capability::Data::create_capability] index: ", Hex(index));
+
 			_caps_data[index] = Tree_managed_data(args...);
 
 			if (_caps_data[index].rpc_obj_key().valid())

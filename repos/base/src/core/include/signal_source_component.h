@@ -48,7 +48,10 @@ class Genode::Signal_context_component : public Rpc_object<Signal_context>,
 		 */
 		Signal_context_component(long imprint,
 		                         Signal_source_component *source)
-		: _imprint(imprint), _cnt(0), _source(source) { }
+		: _imprint(imprint), _cnt(0), _source(source)
+		{
+			log("[lj][core][Signal_context_component::ctor]");
+		}
 
 		/**
 		 * Destructor

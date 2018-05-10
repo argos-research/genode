@@ -35,7 +35,9 @@ struct Genode::Pd_connection : Connection<Pd_session>, Pd_session_client
 		                                    "ram_quota=%u, label=\"%s\"",
 		                                    RAM_QUOTA, label)),
 		Pd_session_client(cap())
-	{ }
+	{
+		log("[lj][Pd_connection::ctor] label: ", label);
+	}
 
 	/**
 	 * Constructor

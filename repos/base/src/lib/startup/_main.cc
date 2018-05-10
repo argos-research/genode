@@ -24,6 +24,7 @@
 #include <base/sleep.h>
 #include <base/log.h>
 #include <base/component.h>
+#include <base/printf.h> // lj
 
 /* platform-specific local helper functions */
 #include <base/internal/parent_cap.h>
@@ -245,6 +246,7 @@ extern "C" int _main()
 	 */
 	atexit_enable();
 
+	PLOG("[lj][startup/_main.cc::_main] Calling bootstrap_component");
 	Genode::bootstrap_component();
 
 	/* never reached */

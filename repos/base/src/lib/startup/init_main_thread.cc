@@ -17,6 +17,7 @@
 #include <util/construct_at.h>
 #include <base/env.h>
 #include <base/thread.h>
+#include <base/printf.h> // lj
 
 /* base-internal includes */
 #include <base/internal/globals.h>
@@ -57,7 +58,9 @@ class Main_thread : public Thread_deprecated<MAIN_THREAD_STACK_SIZE>
 		Main_thread(bool reinit)
 		:
 			Thread_deprecated("main", reinit ? REINITIALIZED_MAIN : MAIN)
-		{ }
+		{
+			PLOG("[lj][startup/Main_thread::ctor] Main_thread created.");
+		}
 
 		/**********************
 		 ** Thread interface **
@@ -86,6 +89,8 @@ Main_thread * main_thread()
  */
 extern "C" void init_main_thread()
 {
+	PLOG("[lj][startup/init_main_thread.cc::init_main_thread]");
+
 	/* do platform specific preparation */
 	prepare_init_main_thread();
 

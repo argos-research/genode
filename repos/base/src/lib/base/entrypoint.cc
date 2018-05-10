@@ -17,6 +17,7 @@
 #include <base/component.h>
 #include <cap_session/connection.h>
 #include <util/retry.h>
+#include <base/printf.h> // lj
 
 /* base-internal includes */
 #include <base/internal/globals.h>
@@ -165,12 +166,14 @@ Entrypoint::Entrypoint(Env &env)
 	_env(env),
 	_rpc_ep(&env.pd(), Component::stack_size(), initial_ep_name())
 {
+//	Genode::log("[lj][Entrypoint::ctor] Thread name: ", Thread::myself()->name().string());
 	/* initialize signalling after initializing but before calling the entrypoint */
+	PLOG("[lj][Entrypoint::ctor] Initializing signalling...");
 	init_signal_thread(_env);
-
 	/*
 	 * Invoke Component::construct function in the context of the entrypoint.
 	 */
+	PLOG("[lj][Entrypoint::ctor] Invoking Component::construct...");
 	Constructor_component constructor(env);
 
 	Capability<Constructor> constructor_cap =

@@ -276,6 +276,7 @@ static Rpc_cap_factory &thread_cap_factory()
 
 void Platform_thread::_create_thread()
 {
+	log("[lj][core][Platform_thread::_create_thread] Creating new thread (kernel API)...");
 	l4_msgtag_t tag = l4_factory_create_thread(L4_BASE_FACTORY_CAP,
 	                                           _thread.local.data()->kcap());
 	if (l4_msgtag_has_error(tag))
@@ -289,12 +290,14 @@ void Platform_thread::_create_thread()
 void Platform_thread::_finalize_construction(const char *name)
 {
 	/* create irq for new thread */
+	log("[lj][core][Platform_thread::_finalize_construction] Creating IRQ (kcap ", Hex(_irq.local.data()->kcap()), ") for thread (kcap ", Hex(_thread.local.data()->kcap()) , "): ", name);
 	l4_msgtag_t tag = l4_factory_create_irq(L4_BASE_FACTORY_CAP,
 	                                        _irq.local.data()->kcap());
 	if (l4_msgtag_has_error(tag))
 		PWRN("creating thread's irq failed");
 
 	/* attach thread to irq */
+	log("[lj][core][Platform_thread::_finalize_construction] Attaching IRQ to thread.");
 	tag = l4_irq_attach(_irq.local.data()->kcap(), 0, _thread.local.data()->kcap());
 	if (l4_msgtag_has_error(tag))
 		PWRN("attaching thread's irq failed");

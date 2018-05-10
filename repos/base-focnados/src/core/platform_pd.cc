@@ -113,7 +113,7 @@ Platform_pd::Platform_pd(Core_cap_index* i)
 }
 
 
-Platform_pd::Platform_pd(Allocator *, char const *)
+Platform_pd::Platform_pd(Allocator *, char const * label)
 : _task(true, TASK_CAP)
 {
 	for (unsigned i = 0; i < THREAD_MAX; i++)
@@ -121,6 +121,9 @@ Platform_pd::Platform_pd(Allocator *, char const *)
 
 	l4_fpage_t utcb_area = l4_fpage(utcb_area_start(),
 	                                log2<unsigned>(UTCB_AREA_SIZE), 0);
+
+	log("[lj][core][Platform_pd::ctor] Creating new task '", label, "' kcap: ", Hex(_task.local.data()->kcap()));
+
 	l4_msgtag_t tag = l4_factory_create_task(L4_BASE_FACTORY_CAP,
 	                                         _task.local.data()->kcap(), utcb_area);
 	if (l4_msgtag_has_error(tag))

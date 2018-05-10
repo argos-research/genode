@@ -23,7 +23,7 @@ namespace Genode { class Signal_source_client; }
 struct Genode::Signal_source_client : Rpc_client<Signal_source>
 {
 	Signal_source_client(Capability<Signal_source> signal_source)
-	: Rpc_client<Signal_source>(signal_source) { }
+	: Rpc_client<Signal_source>(signal_source) { Genode::log("[lj][Signal_source_client::ctor]"); }
 
 	Signal wait_for_signal() override { return call<Rpc_wait_for_signal>(); }
 };

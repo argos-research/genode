@@ -501,7 +501,9 @@ try :
 	_server(_ram),
 	_process(elf_ds, ldso_ds, pd_cap, pd, ram, initial_thread, local_rm, remote_rm,
 	         _parent_cap)
-{ }
+{
+	log("[lj][Child::ctor] Creating ", policy.name());
+}
 catch (Cpu_session::Thread_creation_failed) { throw Process_startup_failed(); }
 catch (Cpu_session::Out_of_metadata)        { throw Process_startup_failed(); }
 catch (Process::Missing_dynamic_linker)     { throw Process_startup_failed(); }

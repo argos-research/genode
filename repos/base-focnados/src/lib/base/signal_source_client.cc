@@ -16,6 +16,7 @@
 #include <signal_source/client.h>
 #include <base/thread.h>
 #include <base/log.h>
+#include <base/printf.h> // lj
 
 /* base-internal includes */
 #include <base/internal/capability_data.h>
@@ -36,8 +37,12 @@ Signal_source_client::Signal_source_client(Capability<Signal_source> cap)
 	using namespace Fiasco;
 
 	/* request mapping of semaphore capability selector */
+	PLOG("[lj][Signal_source_client::ctor] Requesting semaphore via RPC...");
 	_sem = call<Rpc_request_semaphore>();
 
+	PLOG("[lj][Signal_source_client::ctor] Attaching IRQ to thread...");
+
+	log("[lj][Signal_source_client::ctor] semaphore IRQ id: ", Hex(_sem.data()->id()) ," kcap: ", Hex(_sem.data()->kcap()));
 	l4_msgtag_t tag = l4_irq_attach(_sem.data()->kcap(), 0,
 	 Thread::myself()->native_thread().kcap);
 	if (l4_error(tag))

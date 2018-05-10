@@ -76,6 +76,7 @@ Signal_source_component::Signal_source_component(Rpc_entrypoint *ep)
 {
 	using namespace Fiasco;
 
+	log("[lj][core][Signal_source_component::ctor] Creating semaphore IRQ id: ", Hex(_blocking_semaphore.data()->id()) ," kcap: ", Hex(_blocking_semaphore.data()->kcap()), "...");
 	l4_msgtag_t res = l4_factory_create_irq(L4_BASE_FACTORY_CAP,
 	                                        _blocking_semaphore.data()->kcap());
 	if (l4_error(res))

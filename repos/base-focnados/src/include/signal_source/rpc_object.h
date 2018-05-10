@@ -30,9 +30,16 @@ struct Genode::Signal_source_rpc_object : Rpc_object<Foc_signal_source,
 	public:
 
 		Signal_source_rpc_object(Native_capability cap)
-		: _blocking_semaphore(cap) {}
+		: _blocking_semaphore(cap)
+		{
+			log("[lj][Signal_source_rpc_object::ctor]");
+		}
 
-		Native_capability _request_semaphore() { return _blocking_semaphore; }
+		Native_capability _request_semaphore()
+		{
+			log("[lj][Signal_source_rpc_object::_request_semaphore]");
+			return _blocking_semaphore;
+		}
 };
 
 #endif /* _INCLUDE__SIGNAL_SOURCE__RPC_OBJECT_H_ */

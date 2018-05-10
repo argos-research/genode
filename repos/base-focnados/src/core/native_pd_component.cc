@@ -44,7 +44,7 @@ void Native_pd_component::install(Native_capability cap, addr_t kcap)
 {
        using namespace Fiasco;
 
-       //log("Native_pd::\033[33m", __func__, "\033[0m(", cap, ", kcap=", Hex(kcap), ")");
+       log("Native_pd::\033[33m", __func__, "\033[0m(", cap, ", kcap=", Hex(kcap), ")");
 
        // Testing whether remote task has a valid cap at the target cap selector
        {

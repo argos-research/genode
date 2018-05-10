@@ -33,7 +33,12 @@ Child::Process::Loaded_executable::Loaded_executable(Dataspace_capability elf_ds
 {
 	/* skip loading when called during fork */
 	if (!elf_ds.valid())
+	{
+		log("[lj][Child::Process::Loaded_executable::ctor] ELF dataspace invalid");
 		return;
+	}
+
+	log("[lj][Child::Process::Loaded_executable::ctor] ELF dataspace valid");
 
 	/* attach ELF locally */
 	addr_t elf_addr;
@@ -203,9 +208,13 @@ Child::Process::Process(Dataspace_capability  elf_ds,
 	 * started after constructing the 'Process'.
 	 */
 	if (!elf_ds.valid())
+	{
+		log("[lj][Child::Process::ctor] Not starting initial_thread");
 		return;
+	}
 
 	/* start main thread */
+	log("[lj][Child::Process::ctor] Starting initial_thread at ELF start address...");
 	initial_thread.start(loaded_executable.entry);
 }
 

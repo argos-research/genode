@@ -23,7 +23,10 @@ namespace Genode { struct Pd_session_client; }
 struct Genode::Pd_session_client : Rpc_client<Pd_session>
 {
 	explicit Pd_session_client(Pd_session_capability session)
-	: Rpc_client<Pd_session>(session) { }
+	: Rpc_client<Pd_session>(session)
+	{
+		Genode::raw("[lj][Pd_session_client::ctor]"); // <-- using 'Genode::log' invalidates signal-context capability
+	}
 
 	void assign_parent(Capability<Parent> parent) override {
 		call<Rpc_assign_parent>(parent); }
@@ -31,8 +34,11 @@ struct Genode::Pd_session_client : Rpc_client<Pd_session>
 	bool assign_pci(addr_t pci_config_memory_address, uint16_t bdf) override {
 		return call<Rpc_assign_pci>(pci_config_memory_address, bdf); }
 
-	Signal_source_capability alloc_signal_source() override {
-		return call<Rpc_alloc_signal_source>(); }
+	Signal_source_capability alloc_signal_source() override
+	{
+		Genode::log("[lj][Pd_session_client::alloc_signal_source]");
+		return call<Rpc_alloc_signal_source>();
+	}
 
 	void free_signal_source(Signal_source_capability cap) override {
 		call<Rpc_free_signal_source>(cap); }

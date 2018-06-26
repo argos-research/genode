@@ -31,6 +31,7 @@ Child::Process::Loaded_executable::Loaded_executable(Dataspace_capability elf_ds
                                                      Region_map &remote_rm,
                                                      Parent_capability parent_cap)
 {
+	raw("cap_cr|STAGE|Loaded_executable::ctor|");
 	/* skip loading when called during fork */
 	if (!elf_ds.valid())
 	{
@@ -171,7 +172,9 @@ Child::Initial_thread::Initial_thread(Cpu_session          &cpu,
 :
 	_cpu(cpu),
 	_cap(cpu.create_thread(pd, name, Affinity::Location(), Cpu_session::Weight()))
-{ }
+{
+	raw("cap_cr|STAGE|Child::Initial_thread::ctor|");
+}
 
 
 Child::Initial_thread::~Initial_thread()
@@ -199,6 +202,7 @@ Child::Process::Process(Dataspace_capability  elf_ds,
 	initial_thread(initial_thread),
 	loaded_executable(elf_ds, ldso_ds, ram, local_rm, remote_rm, parent_cap)
 {
+	raw("cap_cr|STAGE|Child::Process::ctor");
 	/* register parent interface for new protection domain */
 	pd.assign_parent(parent_cap);
 

@@ -23,6 +23,9 @@ void Genode::Capability_map::remove(Genode::Cap_index* i)
 
 	if (i) {
 		Cap_index* e = _tree.first() ? _tree.first()->find_by_id(i->id()) : 0;
+
+		Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|remove|", Hex(i->id()), "|", Hex(i->kcap()), "|");
+
 		if (e == i)
 			_tree.remove(i);
 		cap_idx_alloc()->free(i, 1);

@@ -84,6 +84,8 @@ Genode::Native_capability Genode::Native_cpu_component::alloc_irq()
 		PWRN("Allocation of irq object failed!");
 		return Genode::Native_capability();
 	}
+	else
+		raw("cap_cr|l4_factory_create_irq|", Hex(i->id()), "|");
 
 	/* construct cap and hold a reference in the irq container object */
 	Genode::Native_capability cap(*i);

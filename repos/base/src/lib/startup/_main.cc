@@ -246,6 +246,8 @@ extern "C" int _main()
 	 */
 	atexit_enable();
 
+	Genode::raw("cap_cr|STAGE|_main|");
+
 	PLOG("[lj][startup/_main.cc::_main] Calling bootstrap_component");
 	Genode::bootstrap_component();
 

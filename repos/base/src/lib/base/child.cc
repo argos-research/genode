@@ -503,6 +503,7 @@ try :
 	         _parent_cap)
 {
 	log("[lj][Child::ctor] Creating ", policy.name());
+	raw("cap_cr|STAGE|Child::ctor|");
 }
 catch (Cpu_session::Thread_creation_failed) { throw Process_startup_failed(); }
 catch (Cpu_session::Out_of_metadata)        { throw Process_startup_failed(); }

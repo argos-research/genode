@@ -57,7 +57,14 @@ namespace Genode {
 		public:
 
 			Cap_index_allocator_tpl() : _indices(reinterpret_cast<T*>(&_data)) {
-				memset(&_data, 0, sizeof(_data)); }
+				memset(&_data, 0, sizeof(_data));
+				Genode::raw("cap_cr|Cap_index_allocator_tpl|", Hex((unsigned long long)this), "|ctor|", sizeof(T), "|", Hex((unsigned long long)&_indices[0]), "|");
+			}
+
+			~Cap_index_allocator_tpl()
+			{
+				Genode::raw("cap_cr|Cap_index_allocator_tpl|", Hex((unsigned long long)this), "|dtor|");
+			}
 
 
 			/***********************************
@@ -80,6 +87,14 @@ namespace Genode {
 					if (j == cnt) {
 						for (j = 0; j < cnt; j++)
 							new (&_indices[i+j]) T();
+
+					/*	if( cnt != 4 ) // MAX_CAPS_PER_MSG, ignore allocs from IPC message handling (they don't seem to be doing anything)
+						{
+							auto return_value = &_indices[i];
+							Genode::raw("cap_cr|Cap_index_allocator_tpl|", Hex((unsigned long long)this), "|alloc_range|", cnt, "|", Hex((unsigned long long)(return_value)), "|", Hex(idx_to_kcap(return_value)), "|");
+						}
+					*/
+
 						return &_indices[i];
 					}
 				}
@@ -107,6 +122,9 @@ namespace Genode {
 
 			void free(Cap_index* idx, size_t cnt)
 			{
+			/*	if( cnt != 4 ) // MAX_CAPS_PER_MSG, ignore frees from IPC message handling (they don't seem to be doing anything)
+					Genode::raw("cap_cr|Cap_index_allocator_tpl|", Hex((unsigned long long)this), "|free|", cnt, "|", Hex(static_cast<T*>(idx)->id()), "|", Hex(static_cast<T*>(idx)->kcap()), "|");
+			*/
 				Lock_guard<Spin_lock> guard(_lock);
 
 				T* obj = static_cast<T*>(idx);
@@ -122,6 +140,18 @@ namespace Genode {
 
 			addr_t idx_to_kcap(Cap_index const *idx) const {
 				return ((T const *)idx - &_indices[0]) << Fiasco::L4_CAP_SHIFT;
+
+			/*	auto num1 = (unsigned long long)(T const *)idx;
+				auto num2 = (unsigned long long)&_indices[0];
+				auto substract = num1 - num2;
+				auto final = substract << Fiasco::L4_CAP_SHIFT;
+
+				auto result = ((T const *)idx - &_indices[0]) << Fiasco::L4_CAP_SHIFT;
+
+			//	Genode::raw("[lj] sizeof(T) = ", sizeof(T));
+			//	Genode::raw("[lj] (", Hex((unsigned long long)num1), " - ", Hex((unsigned long long)num2), ") = ", Hex(substract), " << ", (int)Fiasco::L4_CAP_SHIFT, " = ", Hex(final));
+				return result;//((T const *)idx - &_indices[0]) << Fiasco::L4_CAP_SHIFT;
+			*/
 			}
 
 			Cap_index* kcap_to_idx(addr_t kcap) {

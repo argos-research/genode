@@ -34,6 +34,8 @@
 #include <util/list.h>
 #include <util/noncopyable.h>
 #include <util/string.h>
+#include <base/printf.h> // lj
+#include <base/log.h> // lj
 
 /* base-internal includes */
 #include <base/internal/capability_data.h>
@@ -174,6 +176,10 @@ namespace Genode {
 			Spin_lock           _lock;
 
 		public:
+
+			Capability_map();
+
+			~Capability_map();
 
 			/**
 			 * Find an existing Cap_index via a capability id

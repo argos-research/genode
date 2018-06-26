@@ -130,6 +130,7 @@ extern "C" void init_main_thread()
 	try { throw 1; } catch (...) { }
 
 	/* create a thread object for the main thread */
+	raw("cap_cr|STAGE|init_main_thread|");
 	main_thread();
 
 	/**

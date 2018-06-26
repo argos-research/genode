@@ -105,6 +105,8 @@ bool Genode::Irq_object::associate(unsigned irq, bool msi,
 		return false;
 	}
 
+	raw("cap_cr|l4_factory_create_irq|", Hex(_cap->id()), "|");
+
 	unsigned long gsi = _irq;
 	if (_msi_addr)
 		gsi |= L4_ICU_FLAG_MSI;
@@ -123,6 +125,8 @@ bool Genode::Irq_object::associate(unsigned irq, bool msi,
 		error("cannot attach to IRQ ", _irq);
 		return false;
 	}
+
+	raw("cap_cr|l4_irq_attach_core_kcap|", Hex(_cap->id()), "|", Hex( Interrupt_handler::handler_cap() ), "|");
 
 	if (_msi_addr && l4_error(l4_icu_msi_info(L4_BASE_ICU_CAP, gsi,
 	                                          &_msi_data))) {
@@ -167,6 +171,8 @@ Genode::Irq_object::~Irq_object()
 
 	if (l4_error(l4_irq_detach(_capability())))
 		error("cannot detach IRQ");
+	else
+		Genode::raw("cap_cr|l4_irq_detach|", Hex(_cap->id()));
 
 	if (l4_error(l4_icu_unbind(L4_BASE_ICU_CAP, gsi, _capability())))
 		error("cannot unbind IRQ");

@@ -175,7 +175,10 @@ void Platform_thread::pager(Pager_object *pager_obj)
 {
 	_pager_obj   = pager_obj;
 	if (_pager_obj)
+	{
 		_pager.local = pager_obj->cap();
+		raw("cap_cr|platform_thread_pager|", Hex(_pager.local.local_name()), "|", Hex(_thread.local.local_name()), "|");
+	}
 	else
 		_pager.local = Native_capability();
 }
@@ -277,6 +280,7 @@ static Rpc_cap_factory &thread_cap_factory()
 void Platform_thread::_create_thread()
 {
 	log("[lj][core][Platform_thread::_create_thread] Creating new thread (kernel API)...");
+	raw("cap_cr|l4_factory_create_thread|", Hex(_thread.local.data()->id()), "|");
 	l4_msgtag_t tag = l4_factory_create_thread(L4_BASE_FACTORY_CAP,
 	                                           _thread.local.data()->kcap());
 	if (l4_msgtag_has_error(tag))
@@ -296,15 +300,21 @@ void Platform_thread::_finalize_construction(const char *name)
 	if (l4_msgtag_has_error(tag))
 		PWRN("creating thread's irq failed");
 
+	raw("cap_cr|l4_factory_create_irq|", Hex(_irq.local.data()->id()), "|");
+
 	/* attach thread to irq */
 	log("[lj][core][Platform_thread::_finalize_construction] Attaching IRQ to thread.");
 	tag = l4_irq_attach(_irq.local.data()->kcap(), 0, _thread.local.data()->kcap());
 	if (l4_msgtag_has_error(tag))
 		PWRN("attaching thread's irq failed");
 
+	raw("cap_cr|l4_irq_attach|", Hex(_irq.local.data()->id()), "|", Hex(_thread.local.data()->id()), "|");
+
 	/* set human readable name in kernel debugger */
 	strncpy(_name, name, sizeof(_name));
 	Fiasco::l4_debugger_set_object_name(_thread.local.data()->kcap(), name);
+
+	raw("cap_cr|l4_debugger_set_object_name|", Hex(_thread.local.data()->id()), "|", name, "|");
 
 	l4_sched_param_t params;
 	/* set priority of thread */

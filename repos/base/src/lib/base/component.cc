@@ -23,7 +23,11 @@ namespace {
 	{
 		Genode::Entrypoint &_ep;
 
-		Env(Genode::Entrypoint &ep) : _ep(ep) { Genode::log("[lj][Env::ctor]"); }
+		Env(Genode::Entrypoint &ep) : _ep(ep)
+		{
+			Genode::log("[lj][Env::ctor]");
+			Genode::raw("cap_cr|STAGE|::Env::ctor|");
+		}
 
 		Genode::Parent      &parent() override { return *Genode::env()->parent(); }
 		Genode::Ram_session &ram()    override { return *Genode::env()->ram_session(); }

@@ -75,6 +75,7 @@ Rpc_entrypoint::Rpc_entrypoint(Pd_session *pd_session, size_t stack_size,
 	_delay_exit(Lock::LOCKED),
 	_pd_session(*pd_session)
 {
+	raw("cap_cr|STAGE|Rpc_entrypoint::ctor|");
 	Thread::start();
 	_block_until_cap_valid();
 
@@ -82,6 +83,7 @@ Rpc_entrypoint::Rpc_entrypoint(Pd_session *pd_session, size_t stack_size,
 		activate();
 
 	_exit_cap = manage(&_exit_handler);
+	log("[lj][Rpc_entrypoint::ctor] _exit_cap = ", Hex(_exit_cap.local_name()));
 }
 
 
@@ -92,6 +94,8 @@ Rpc_entrypoint::~Rpc_entrypoint()
 	 * if the Rpc_entrypoint was actived before we execute the RPC call.
 	 */
 	_delay_start.unlock();
+
+//	log("[lj][Rpc_entrypoint::~Rpc_entrypoint] dissolving exit handler ", Hex(_exit_cap.local_name()));
 
 	/* leave server loop */
 	_exit_cap.call<Exit::Rpc_exit>();

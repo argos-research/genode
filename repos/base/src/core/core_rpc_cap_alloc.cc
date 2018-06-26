@@ -31,6 +31,7 @@ static Rpc_cap_factory &rpc_cap_factory()
 Native_capability Rpc_entrypoint::_alloc_rpc_cap(Pd_session &, Native_capability ep,
                                                  addr_t)
 {
+	Genode::log("[lj][core][Rpc_entrypoint::_alloc_rpc_cap] Calling rpc_cap_factory().alloc(ep), ep = ", Hex(ep.local_name()));
 	return rpc_cap_factory().alloc(ep);
 }
 

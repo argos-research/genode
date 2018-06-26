@@ -167,6 +167,7 @@ Entrypoint::Entrypoint(Env &env)
 	_rpc_ep(&env.pd(), Component::stack_size(), initial_ep_name())
 {
 //	Genode::log("[lj][Entrypoint::ctor] Thread name: ", Thread::myself()->name().string());
+
 	/* initialize signalling after initializing but before calling the entrypoint */
 	PLOG("[lj][Entrypoint::ctor] Initializing signalling...");
 	init_signal_thread(_env);
@@ -174,10 +175,14 @@ Entrypoint::Entrypoint(Env &env)
 	 * Invoke Component::construct function in the context of the entrypoint.
 	 */
 	PLOG("[lj][Entrypoint::ctor] Invoking Component::construct...");
+	raw("cap_cr|STAGE|Constructor_component|");
 	Constructor_component constructor(env);
 
+	raw("cap_cr|STAGE|Constructor_cap|");
 	Capability<Constructor> constructor_cap =
 		_rpc_ep->manage(&constructor);
+
+	raw("cap_cr|STAGE|call<Constructor::Rpc_construct>()|");
 
 	try {
 		constructor_cap.call<Constructor::Rpc_construct>();
@@ -191,6 +196,7 @@ Entrypoint::Entrypoint(Env &env)
 	 * The calling initial thread becomes the signal proxy thread for this
 	 * entrypoint
 	 */
+	raw("cap_cr|STAGE|_process_incoming_signals|");
 	_process_incoming_signals();
 }
 

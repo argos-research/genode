@@ -117,7 +117,7 @@ Native_capability Rpc_cap_factory::alloc(Native_capability ep)
 			return cap;
 		}
 
-	//	log("[lj][core][Rpc_cap_factory] Creating gate '", Hex(id), "' kcap: ", Hex(idx->kcap()), " thread: ", ref->pt()->name());
+		log("[lj][core][Rpc_cap_factory::alloc] Creating gate '", Hex(id), "' kcap: ", Hex(idx->kcap()), " thread: ", Hex(ref->pt()->thread().local.data()->id()), " ", ref->pt()->name());
 		l4_msgtag_t tag = l4_factory_create_gate(L4_BASE_FACTORY_CAP,
 		                                         idx->kcap(),
 		                                         ref->pt()->thread().local.data()->kcap(), id);
@@ -126,9 +126,13 @@ Native_capability Rpc_cap_factory::alloc(Native_capability ep)
 			cap_map()->remove(idx);
 			platform_specific()->cap_id_alloc()->free(id);
 			return cap;
-		} else
+		} else {
 			/* set debugger-name of ipc-gate to thread's name */
 			Fiasco::l4_debugger_set_object_name(idx->kcap(), ref->pt()->name());
+
+			raw("cap_cr|l4_factory_create_gate|", Hex(id), "|", Hex(ref->pt()->thread().local.data()->id()), "|");
+			raw("cap_cr|l4_debugger_set_object_name|", Hex(idx->id()), "|", ref->pt()->name(), "|");
+		}
 
 		// XXX remove cast
 		idx->session((Pd_session_component *)this);
@@ -223,12 +227,17 @@ void Genode::Capability_map::remove(Genode::Cap_index* i)
 	if (i) {
 		Core_cap_index* e = static_cast<Core_cap_index*>(_tree.first() ? _tree.first()->find_by_id(i->id()) : 0);
 		if (e == i) {
+
+			Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|remove|", Hex(i->id()), "|", Hex(i->kcap()), "|");
+
 			l4_msgtag_t tag = l4_task_unmap(L4_BASE_TASK_CAP,
 			                                l4_obj_fpage(i->kcap(), 0, L4_FPAGE_RWX),
 			                                L4_FP_ALL_SPACES | L4_FP_DELETE_OBJ);
 			if (l4_msgtag_has_error(tag))
 				error("destruction of ipc-gate ", i->kcap(), " failed!");
 
+			// log always because following free() and remove() are also unconditional
+			Genode::raw("cap_cr|l4_task_unmap|", Hex(i->id()), "|");
 
 			platform_specific()->cap_id_alloc()->free(i->id());
 			_tree.remove(i);

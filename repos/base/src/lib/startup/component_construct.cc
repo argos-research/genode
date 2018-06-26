@@ -75,6 +75,7 @@ void Component::construct(Genode::Env &env) __attribute__((weak));
 void Component::construct(Genode::Env &env)
 {
 	/* call real main function */
+	Genode::raw("cap_cr|STAGE|call_real_main_function|");
 	exit_status = main(genode_argc, genode_argv, genode_envp);
 
 	/* trigger suspend in the entry point */

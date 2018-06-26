@@ -97,6 +97,8 @@ void Thread::start()
 	l4_utcb_tcr_u(foc_utcb)->user[UTCB_TCR_BADGE]      = (unsigned long) i;
 	l4_utcb_tcr_u(foc_utcb)->user[UTCB_TCR_THREAD_OBJ] = (addr_t)this;
 
+	raw("cap_cr|Thread_state|", Hex(state.id), "|", Hex(_thread_cap.data()->id()), "|");
+
 	/* register initial IP and SP at core */
 	cpu_thread.start((addr_t)_thread_start, _stack->top());
 }

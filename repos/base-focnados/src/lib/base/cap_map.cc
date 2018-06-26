@@ -88,11 +88,21 @@ Genode::uint8_t Genode::Cap_index::dec()
  **  Capability_map class  **
  ****************************/
 
+Genode::Capability_map::Capability_map()
+{
+	Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|ctor|");
+}
+
+Genode::Capability_map::~Capability_map()
+{
+	Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|dtor|");
+}
+
 Genode::Cap_index* Genode::Capability_map::find(int id)
 {
 	Genode::Lock_guard<Spin_lock> guard(_lock);
 
-	Genode::raw("[lj] Capability_map::find() id: ", Hex(id));
+//	Genode::raw("[lj] Capability_map::find() id: ", Hex(id));
 
 	return _tree.first() ? _tree.first()->find_by_id(id) : 0;
 }
@@ -113,6 +123,9 @@ Genode::Cap_index* Genode::Capability_map::insert(int id)
 	if (i) {
 		i->id(id);
 		_tree.insert(i);
+
+//		Genode::printf("cap_cr|Capability_map|insert|0x%x|0x%x|0x%lx\n", (unsigned int)this, id, i->kcap(), "|");
+		Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|insert|", Hex(id), "|", Hex(i->kcap()), "|");
 	}
 	return i;
 }
@@ -135,6 +148,9 @@ Genode::Cap_index* Genode::Capability_map::insert(int id, addr_t kcap)
 	if (i) {
 		i->id(id);
 		_tree.insert(i);
+
+//		Genode::printf("cap_cr|Capability_map|insert|0x%x|0x%x|0x%lx\n", (unsigned int)this, id, i->kcap(), "|");
+		Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|insert|", Hex(id), "|", Hex(i->kcap()), "|");
 	}
 	return i;
 }
@@ -179,6 +195,9 @@ Genode::Cap_index* Genode::Capability_map::insert_map(int id, addr_t kcap)
 	/* set it's id and insert it into the tree */
 	i->id(id);
 	_tree.insert(i);
+
+//	Genode::printf("cap_cr|Capability_map|insert|0x%x|0x%x|0x%lx\n", (unsigned int)this, id, i->kcap(), "|");
+	Genode::raw("cap_cr|Capability_map|", Hex((unsigned long long)this), "|insert|", Hex(id), "|", Hex(i->kcap()), "|");
 
 	/* map the given cap to our registry entry */
 	l4_task_map(L4_BASE_TASK_CAP, L4_BASE_TASK_CAP,

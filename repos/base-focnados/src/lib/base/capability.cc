@@ -64,7 +64,7 @@ void Native_capability::print(Genode::Output &out) const
 
 	print(out, "cap<");
 	if (_data) {
-		print(out, "kcap=", Hex(_data->kcap()), ",key=", (unsigned)_data->id());
+		print(out, "kcap=", Hex(_data->kcap()), ",key=", (unsigned)_data->id(), ",key_hex=", Hex(_data->id()));
 	} else {
 		print(out, "invalid");
 	}

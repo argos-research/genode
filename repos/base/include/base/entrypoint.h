@@ -71,7 +71,7 @@ class Genode::Entrypoint : Genode::Noncopyable
 		Volatile_object<Rpc_entrypoint> _rpc_ep;
 
 		Signal_proxy_component   _signal_proxy {*this};
-		Capability<Signal_proxy> _signal_proxy_cap = _rpc_ep->manage(&_signal_proxy);
+		Capability<Signal_proxy> _signal_proxy_cap = _rpc_ep->manage_signal_proxy_cap(&_signal_proxy); // lj
 
 		Volatile_object<Signal_receiver> _sig_rec;
 

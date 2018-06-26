@@ -27,10 +27,15 @@ struct Genode::Signal_source_rpc_object : Rpc_object<Foc_signal_source,
 
 		Native_capability _blocking_semaphore;
 
+	private:
+
+		Rpc_entrypoint* _ep;
+
 	public:
 
-		Signal_source_rpc_object(Native_capability cap)
+		Signal_source_rpc_object(Native_capability cap, Rpc_entrypoint* ep)
 		: _blocking_semaphore(cap)
+		, _ep(ep)
 		{
 			log("[lj][Signal_source_rpc_object::ctor]");
 		}
@@ -40,6 +45,8 @@ struct Genode::Signal_source_rpc_object : Rpc_object<Foc_signal_source,
 			log("[lj][Signal_source_rpc_object::_request_semaphore]");
 			return _blocking_semaphore;
 		}
+
+		void _attach_semaphore(Thread_capability thread_cap);//int thread_obj_id); // implementation in signal_source_component.cc
 };
 
 #endif /* _INCLUDE__SIGNAL_SOURCE__RPC_OBJECT_H_ */

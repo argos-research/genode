@@ -25,6 +25,7 @@
 /* Fiasco includes */
 namespace Fiasco {
 #include <l4/sys/irq.h>
+#include <l4/sys/kdebug.h> // lj
 }
 
 using namespace Genode;
@@ -38,21 +39,42 @@ Signal_source_client::Signal_source_client(Capability<Signal_source> cap)
 
 	/* request mapping of semaphore capability selector */
 	PLOG("[lj][Signal_source_client::ctor] Requesting semaphore via RPC...");
+//	enter_kdebug("Before semaphore request");
 	_sem = call<Rpc_request_semaphore>();
+//	enter_kdebug("After semaphore request");
 
 	PLOG("[lj][Signal_source_client::ctor] Attaching IRQ to thread...");
 
-	log("[lj][Signal_source_client::ctor] semaphore IRQ id: ", Hex(_sem.data()->id()) ," kcap: ", Hex(_sem.data()->kcap()));
+	log("[lj][Signal_source_client::ctor] semaphore IRQ id: ", Hex(_sem.data()->id()) ," kcap: ", Hex(_sem.data()->kcap()), " thread: ", Hex(Thread::myself()->native_thread().kcap));
 	l4_msgtag_t tag = l4_irq_attach(_sem.data()->kcap(), 0,
 	 Thread::myself()->native_thread().kcap);
 	if (l4_error(tag))
 		Genode::raw("l4_irq_attach failed with ", l4_error(tag));
+	else
+	{
+		Genode::raw("cap_cr|l4_irq_attach|", Hex(_sem.data()->id()), "|", Hex(Thread::myself()->cap().data()->id() ), "|");
+		Genode::raw("cap_cr|semaphore_irq|", Hex(_sem.data()->id()), "|", Hex(Thread::myself()->cap().data()->id() ), "|");
+	}
 }
 
+// lj
+Signal_source_client::Signal_source_client(Capability<Signal_source> cap, Thread_capability thread_cap)//int thread_obj_id)
+:
+	Rpc_client<Foc_signal_source>(static_cap_cast<Foc_signal_source>(cap))
+{
+//	_sem = call<Rpc_request_semaphore>();
+	restored = true;
+//	call<Rpc_attach_semaphore>(thread_cap);//thread_obj_id);
+}
 
 Signal_source_client::~Signal_source_client()
 {
-	Fiasco::l4_irq_detach(_sem.data()->kcap());
+	Genode::log("[lj] before detach");
+
+	if(!restored)
+		Fiasco::l4_msgtag_t tag = Fiasco::l4_irq_detach(_sem.data()->kcap());
+
+	Genode::raw("cap_cr|l4_irq_detach|", Hex(_sem.data()->id()));
 }
 
 

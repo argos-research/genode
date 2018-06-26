@@ -39,12 +39,19 @@ class Genode::Signal_source_client : public Rpc_client<Foc_signal_source>
 		 */
 		Native_capability _sem;
 
+		bool restored = false;
+
 	public:
 
 		/**
 		 * Constructor
 		 */
 		Signal_source_client(Capability<Signal_source> cap);
+
+		/**
+		 * Constructor for rtcr
+		 */
+		Signal_source_client(Capability<Signal_source> cap, Thread_capability thread_cap);// int thread_obj_id);
 
 		/**
 		 * Destructor

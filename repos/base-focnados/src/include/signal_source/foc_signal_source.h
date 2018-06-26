@@ -24,7 +24,8 @@ namespace Genode { struct Foc_signal_source; }
 struct Genode::Foc_signal_source : Signal_source
 {
 	GENODE_RPC(Rpc_request_semaphore, Native_capability, _request_semaphore);
-	GENODE_RPC_INTERFACE_INHERIT(Signal_source, Rpc_request_semaphore);
+	GENODE_RPC(Rpc_attach_semaphore, void, _attach_semaphore, Thread_capability);
+	GENODE_RPC_INTERFACE_INHERIT(Signal_source, Rpc_request_semaphore, Rpc_attach_semaphore);
 };
 
 #endif /* _INCLUDE__SIGNAL_SOURCE__FOC_SIGNAL_SOURCE_H_ */

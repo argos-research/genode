@@ -25,7 +25,7 @@ struct Genode::Pd_session_client : Rpc_client<Pd_session>
 	explicit Pd_session_client(Pd_session_capability session)
 	: Rpc_client<Pd_session>(session)
 	{
-		Genode::raw("[lj][Pd_session_client::ctor]"); // <-- using 'Genode::log' invalidates signal-context capability
+		Genode::raw("[cap_cr][Pd_session_client::ctor]"); // <-- using 'Genode::log' invalidates signal-context capability
 	}
 
 	void assign_parent(Capability<Parent> parent) override {
@@ -36,7 +36,7 @@ struct Genode::Pd_session_client : Rpc_client<Pd_session>
 
 	Signal_source_capability alloc_signal_source() override
 	{
-		Genode::log("[lj][Pd_session_client::alloc_signal_source]");
+		Genode::log("[cap_cr][Pd_session_client::alloc_signal_source]");
 		return call<Rpc_alloc_signal_source>();
 	}
 

@@ -166,15 +166,15 @@ Entrypoint::Entrypoint(Env &env)
 	_env(env),
 	_rpc_ep(&env.pd(), Component::stack_size(), initial_ep_name())
 {
-//	Genode::log("[lj][Entrypoint::ctor] Thread name: ", Thread::myself()->name().string());
+//	Genode::log("[cap_cr][Entrypoint::ctor] Thread name: ", Thread::myself()->name().string());
 
 	/* initialize signalling after initializing but before calling the entrypoint */
-	PLOG("[lj][Entrypoint::ctor] Initializing signalling...");
+	PLOG("[cap_cr][Entrypoint::ctor] Initializing signalling...");
 	init_signal_thread(_env);
 	/*
 	 * Invoke Component::construct function in the context of the entrypoint.
 	 */
-	PLOG("[lj][Entrypoint::ctor] Invoking Component::construct...");
+	PLOG("[cap_cr][Entrypoint::ctor] Invoking Component::construct...");
 	raw("cap_cr|STAGE|Constructor_component|");
 	Constructor_component constructor(env);
 

@@ -133,8 +133,8 @@ namespace Genode {
 		_marshal_args(call_buf, args);
 
 		{
-			if(Genode::strcmp(IF::name(), "write")) // don't log write calls
-				Genode::raw("[lj] Call ", Hex(this->local_name()), ":", IF::name());//, "() (kcap: ", Hex(_data->kcap()), ")");
+		//	if(Genode::strcmp(IF::name(), "write")) // don't log write calls
+		//		Genode::raw("[cap_cr] Call ", Hex(this->local_name()), ":", IF::name());//, "() (kcap: ", Hex(_data->kcap()), ")");
 			Trace::Rpc_call trace_event(IF::name(), call_buf);
 		}
 
@@ -149,8 +149,8 @@ namespace Genode {
 		unmarshaller.extract(ret);
 
 		{
-			if(Genode::strcmp(IF::name(), "write")) // don't log write calls
-				Genode::raw("[lj] Returned ", Hex(this->local_name()), ":", IF::name());
+		//	if(Genode::strcmp(IF::name(), "write")) // don't log write calls
+		//		Genode::raw("[cap_cr] Returned ", Hex(this->local_name()), ":", IF::name());
 			Trace::Rpc_returned trace_event(IF::name(), reply_buf);
 		}
 

@@ -37,12 +37,12 @@ struct Genode::Signal_source_rpc_object : Rpc_object<Foc_signal_source,
 		: _blocking_semaphore(cap)
 		, _ep(ep)
 		{
-			log("[lj][Signal_source_rpc_object::ctor]");
+			log("[cap_cr][Signal_source_rpc_object::ctor]");
 		}
 
 		Native_capability _request_semaphore()
 		{
-			log("[lj][Signal_source_rpc_object::_request_semaphore]");
+			log("[cap_cr][Signal_source_rpc_object::_request_semaphore]");
 			return _blocking_semaphore;
 		}
 

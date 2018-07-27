@@ -39,7 +39,7 @@ Genode::Cap_index* Genode::Cap_index::find_by_id(Genode::uint16_t id)
 {
 	using namespace Genode;
 
-//	Genode::raw("[lj] Cap_index::find_by_id() id: ", id);
+//	Genode::raw("[cap_cr] Cap_index::find_by_id() id: ", id);
 
 	if (_id == id) return this;
 
@@ -52,7 +52,7 @@ Genode::Cap_index* Genode::Cap_index::find_by_id(Genode::uint16_t id)
 
 Genode::addr_t Genode::Cap_index::kcap() const
 {
-//	Genode::raw("[lj] Cap_index::kcap()");
+//	Genode::raw("[cap_cr] Cap_index::kcap()");
 
 	return cap_idx_alloc()->idx_to_kcap(this);
 }
@@ -102,7 +102,7 @@ Genode::Cap_index* Genode::Capability_map::find(int id)
 {
 	Genode::Lock_guard<Spin_lock> guard(_lock);
 
-//	Genode::raw("[lj] Capability_map::find() id: ", Hex(id));
+//	Genode::raw("[cap_cr] Capability_map::find() id: ", Hex(id));
 
 	return _tree.first() ? _tree.first()->find_by_id(id) : 0;
 }
@@ -114,7 +114,7 @@ Genode::Cap_index* Genode::Capability_map::insert(int id)
 
 	Lock_guard<Spin_lock> guard(_lock);
 
-//	Genode::raw("[lj] Capability_map::insert() id: ", Hex(id));
+//	Genode::raw("[cap_cr] Capability_map::insert() id: ", Hex(id));
 
 	ASSERT(!_tree.first() || !_tree.first()->find_by_id(id),
 	       "Double insertion in cap_map()!");
@@ -137,7 +137,7 @@ Genode::Cap_index* Genode::Capability_map::insert(int id, addr_t kcap)
 
 	Lock_guard<Spin_lock> guard(_lock);
 
-//	Genode::raw("[lj][Capability_map::insert] ", Hex((unsigned long long)this), " id: ", Hex(id), " kcap: ", Hex(kcap));
+//	Genode::raw("[cap_cr][Capability_map::insert] ", Hex((unsigned long long)this), " id: ", Hex(id), " kcap: ", Hex(kcap));
 
 	/* remove potentially existent entry */
 	Cap_index *i = _tree.first() ? _tree.first()->find_by_id(id) : 0;
@@ -163,7 +163,7 @@ Genode::Cap_index* Genode::Capability_map::insert_map(int id, addr_t kcap)
 
 	Lock_guard<Spin_lock> guard(_lock);
 
-//	Genode::raw("[lj][Capability_map::insert_map] ", Hex((unsigned long long)this), " id: ", Hex(id), " kcap: ", Hex(kcap));
+//	Genode::raw("[cap_cr][Capability_map::insert_map] ", Hex((unsigned long long)this), " id: ", Hex(id), " kcap: ", Hex(kcap));
 
 	/* check whether capability id exists */
 	Cap_index *i = _tree.first() ? _tree.first()->find_by_id(id) : 0;
@@ -220,7 +220,7 @@ Genode::Capability_map* Genode::cap_map()
 
 Fiasco::l4_cap_idx_t Genode::Capability_space::alloc_kcap()
 {
-	Genode::raw("[lj] Capability_space::alloc_kcap()");
+	Genode::raw("[cap_cr] Capability_space::alloc_kcap()");
 
 	return cap_idx_alloc()->alloc_range(1)->kcap();
 }
@@ -228,7 +228,7 @@ Fiasco::l4_cap_idx_t Genode::Capability_space::alloc_kcap()
 
 void Genode::Capability_space::free_kcap(Fiasco::l4_cap_idx_t kcap)
 {
-	Genode::raw("[lj] Capability_space::free_kcap() kcap: ", Hex(kcap));
+	Genode::raw("[cap_cr] Capability_space::free_kcap() kcap: ", Hex(kcap));
 
 	Genode::Cap_index* idx = Genode::cap_idx_alloc()->kcap_to_idx(kcap);
 	Genode::cap_idx_alloc()->free(idx, 1);
@@ -237,7 +237,7 @@ void Genode::Capability_space::free_kcap(Fiasco::l4_cap_idx_t kcap)
 
 Fiasco::l4_cap_idx_t Genode::Capability_space::kcap(Native_capability cap)
 {
-	Genode::raw("[lj] Capability_space::kcap() cap: ", cap.local_name());
+	Genode::raw("[cap_cr] Capability_space::kcap() cap: ", cap.local_name());
 
 	if (cap.data() == nullptr)
 		Genode::raw("Native_capability data is NULL!");

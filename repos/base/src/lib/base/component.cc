@@ -25,7 +25,7 @@ namespace {
 
 		Env(Genode::Entrypoint &ep) : _ep(ep)
 		{
-			Genode::log("[lj][Env::ctor]");
+			Genode::log("[cap_cr][Env::ctor]");
 			Genode::raw("cap_cr|STAGE|::Env::ctor|");
 		}
 

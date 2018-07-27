@@ -33,6 +33,10 @@ Untyped_capability Rpc_entrypoint::_manage(Rpc_object_base *obj)
 	obj->cap(new_obj_cap);
 	insert(obj);
 
+	// lj
+	if( new_obj_cap.local_name() == 0x864 )
+		log("[cap_cr][Rpc_entrypoint::_manage] object inside Rpc_entrypoint ", Hex((addr_t)this));
+
 	/* return capability that uses the object id as badge */
 	return new_obj_cap;
 }

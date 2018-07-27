@@ -59,7 +59,8 @@ class Main_thread : public Thread_deprecated<MAIN_THREAD_STACK_SIZE>
 		:
 			Thread_deprecated("main", reinit ? REINITIALIZED_MAIN : MAIN)
 		{
-			PLOG("[lj][startup/Main_thread::ctor] Main_thread created.");
+			PLOG("[cap_cr][startup/Main_thread::ctor] Main_thread created.");
+			log("[cap_cr][startup/Main_thread::ctor] main thread cap = ", Hex(cap().local_name()));
 		}
 
 		/**********************
@@ -89,7 +90,7 @@ Main_thread * main_thread()
  */
 extern "C" void init_main_thread()
 {
-	PLOG("[lj][startup/init_main_thread.cc::init_main_thread]");
+	PLOG("[cap_cr][startup/init_main_thread.cc::init_main_thread]");
 
 	/* do platform specific preparation */
 	prepare_init_main_thread();

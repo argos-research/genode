@@ -45,7 +45,7 @@ class Genode::Signal_broker
 			_source(&_context_ep),
 			_source_cap(_source_ep.manage(&_source))
 		{
-			log("[lj][core][Signal_broker::ctor]");
+			log("[cap_cr][core][Signal_broker::ctor]");
 		}
 
 		~Signal_broker()
@@ -60,7 +60,7 @@ class Genode::Signal_broker
 
 		Signal_source_capability alloc_signal_source()
 		{
-			log("[lj][core][Signal_broker::alloc_signal_source] 'return _source_cap;'");
+			log("[cap_cr][core][Signal_broker::alloc_signal_source] 'return _source_cap;'");
 			return _source_cap;
 		}
 
@@ -69,7 +69,7 @@ class Genode::Signal_broker
 		Signal_context_capability
 		alloc_context(Signal_source_capability, unsigned long imprint)
 		{
-			log("[lj][core][Signal_broker::alloc_context]");
+			log("[cap_cr][core][Signal_broker::alloc_context]");
 			/*
 			 * XXX  For now, we ignore the signal-source argument as we
 			 *      create only a single receiver for each PD.

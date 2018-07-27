@@ -248,7 +248,7 @@ extern "C" int _main()
 
 	Genode::raw("cap_cr|STAGE|_main|");
 
-	PLOG("[lj][startup/_main.cc::_main] Calling bootstrap_component");
+	PLOG("[cap_cr][startup/_main.cc::_main] Calling bootstrap_component");
 	Genode::bootstrap_component();
 
 	/* never reached */

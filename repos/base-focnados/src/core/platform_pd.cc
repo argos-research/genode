@@ -122,7 +122,7 @@ Platform_pd::Platform_pd(Allocator *, char const * label)
 	l4_fpage_t utcb_area = l4_fpage(utcb_area_start(),
 	                                log2<unsigned>(UTCB_AREA_SIZE), 0);
 
-	log("[lj][core][Platform_pd::ctor] Creating new task '", label, "' kcap: ", Hex(_task.local.data()->kcap()));
+	log("[cap_cr][core][Platform_pd::ctor] Creating new task '", label, "' kcap: ", Hex(_task.local.data()->kcap()));
 //	raw("cap_cr|Platform_pd|", Hex((unsigned long long)this), "|ctor|", Hex(_task.local.data()->id()), "|", Hex(_task.local.data()->kcap()), "|", label, "|");
 
 	l4_msgtag_t tag = l4_factory_create_task(L4_BASE_FACTORY_CAP,

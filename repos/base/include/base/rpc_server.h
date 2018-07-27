@@ -382,7 +382,7 @@ class Genode::Rpc_entrypoint : Thread, public Object_pool<Rpc_object_base>
 		manage_signal_proxy_cap(Rpc_object<RPC_INTERFACE, RPC_SERVER> *obj)
 		{
 			auto cap = manage(obj);
-			Genode::log("[lj][Genode::Rpc_entrypoint::manage_signal_proxy_cap] _signal_proxy_cap = ", Hex(cap.local_name()));
+			Genode::log("[cap_cr][Genode::Rpc_entrypoint::manage_signal_proxy_cap] _signal_proxy_cap = ", Hex(cap.local_name()));
 			return cap;
 		}
 

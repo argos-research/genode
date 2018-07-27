@@ -50,7 +50,7 @@ class Genode::Signal_context_component : public Rpc_object<Signal_context>,
 		                         Signal_source_component *source)
 		: _imprint(imprint), _cnt(0), _source(source)
 		{
-			log("[lj][core][Signal_context_component::ctor]");
+			log("[cap_cr][core][Signal_context_component::ctor]");
 		}
 
 		/**

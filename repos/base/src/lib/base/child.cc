@@ -502,7 +502,7 @@ try :
 	_process(elf_ds, ldso_ds, pd_cap, pd, ram, initial_thread, local_rm, remote_rm,
 	         _parent_cap)
 {
-	log("[lj][Child::ctor] Creating ", policy.name());
+	log("[cap_cr][Child::ctor] Creating ", policy.name());
 	raw("cap_cr|STAGE|Child::ctor|");
 }
 catch (Cpu_session::Thread_creation_failed) { throw Process_startup_failed(); }

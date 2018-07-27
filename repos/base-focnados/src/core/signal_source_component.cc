@@ -77,7 +77,7 @@ Signal_source_component::Signal_source_component(Rpc_entrypoint *ep)
 {
 	using namespace Fiasco;
 
-	log("[lj][core][Signal_source_component::ctor] Creating semaphore IRQ id: ", Hex(_blocking_semaphore.data()->id()) ," kcap: ", Hex(_blocking_semaphore.data()->kcap()), "...");
+	log("[cap_cr][core][Signal_source_component::ctor] Creating semaphore IRQ id: ", Hex(_blocking_semaphore.data()->id()) ," kcap: ", Hex(_blocking_semaphore.data()->kcap()), "...");
 	raw("cap_cr|STAGE|signal_semaphore_irq|");
 
 	l4_msgtag_t res = l4_factory_create_irq(L4_BASE_FACTORY_CAP,
@@ -112,13 +112,13 @@ void Signal_source_rpc_object::_attach_semaphore(Thread_capability thread_cap)//
 {
 /*	using namespace Fiasco;
 
-//	log("[lj][Signal_source_rpc_object::_attach_semaphore] thread_cap id: ", Hex(thread_cap.local_name()), ", kcap: ", Hex(thread_cap.data()->kcap()));
+//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] thread_cap id: ", Hex(thread_cap.local_name()), ", kcap: ", Hex(thread_cap.data()->kcap()));
 
 //	Genode::Cpu_thread_client ctc(thread_cap);
 //	auto state = ctc.state();
-//	log("[lj][Signal_source_rpc_object::_attach_semaphore] thread state id: ", Hex(state.id), ", kcap: ", Hex(state.kcap));
+//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] thread state id: ", Hex(state.id), ", kcap: ", Hex(state.kcap));
 
-//	log("[lj][Signal_source_rpc_object::_attach_semaphore] thread_obj_id = ", Hex(thread_obj_id), ", Rpc_entrypoint = ", Hex((addr_t)_ep));
+//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] thread_obj_id = ", Hex(thread_obj_id), ", Rpc_entrypoint = ", Hex((addr_t)_ep));
 
 //	l4_irq_detach(_blocking_semaphore.data()->kcap());
 
@@ -127,7 +127,7 @@ void Signal_source_rpc_object::_attach_semaphore(Thread_capability thread_cap)//
 	//	auto sem_id = _blocking_semaphore.data()->id();
 	//	auto sem_kcap = _blocking_semaphore.data()->kcap();
 
-	//	log("[lj][Signal_source_rpc_object::_attach_semaphore] sem id: ", Hex(sem_id), " kcap: ", Hex(sem_kcap));
+	//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] sem id: ", Hex(sem_id), " kcap: ", Hex(sem_kcap));
 
 		if (t)
 		{
@@ -137,8 +137,8 @@ void Signal_source_rpc_object::_attach_semaphore(Thread_capability thread_cap)//
 		//	auto thread_state = t->state();
 		//	auto& gate = t->platform_thread().gate();
 
-		//	log("[lj][Signal_source_rpc_object::_attach_semaphore] thread id: ", Hex(thread_id), " kcap: ", Hex(thread_kcap));
-		//	log("[lj][Signal_source_rpc_object::_attach_semaphore] thread state id: ", Hex(gate.local.data()->id()), ", kcap: ", Hex(gate.local.data()->kcap()));
+		//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] thread id: ", Hex(thread_id), " kcap: ", Hex(thread_kcap));
+		//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] thread state id: ", Hex(gate.local.data()->id()), ", kcap: ", Hex(gate.local.data()->kcap()));
 
 		//	l4_msgtag_t tag = l4_irq_attach(_blocking_semaphore.data()->kcap(), 0,
 		//			gate.local.data()->kcap());
@@ -146,7 +146,7 @@ void Signal_source_rpc_object::_attach_semaphore(Thread_capability thread_cap)//
 		//			Genode::raw("l4_irq_attach failed with ", l4_error(tag));
 		}
 		else
-		//	log("[lj][Signal_source_rpc_object::_attach_semaphore] Cpu_thread_component* is nullptr");
+		//	log("[cap_cr][Signal_source_rpc_object::_attach_semaphore] Cpu_thread_component* is nullptr");
 			;
 	  }
 	);

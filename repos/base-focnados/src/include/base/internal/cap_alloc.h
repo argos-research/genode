@@ -148,8 +148,8 @@ namespace Genode {
 
 				auto result = ((T const *)idx - &_indices[0]) << Fiasco::L4_CAP_SHIFT;
 
-			//	Genode::raw("[lj] sizeof(T) = ", sizeof(T));
-			//	Genode::raw("[lj] (", Hex((unsigned long long)num1), " - ", Hex((unsigned long long)num2), ") = ", Hex(substract), " << ", (int)Fiasco::L4_CAP_SHIFT, " = ", Hex(final));
+			//	Genode::raw("[cap_cr] sizeof(T) = ", sizeof(T));
+			//	Genode::raw("[cap_cr] (", Hex((unsigned long long)num1), " - ", Hex((unsigned long long)num2), ") = ", Hex(substract), " << ", (int)Fiasco::L4_CAP_SHIFT, " = ", Hex(final));
 				return result;//((T const *)idx - &_indices[0]) << Fiasco::L4_CAP_SHIFT;
 			*/
 			}

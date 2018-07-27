@@ -42,7 +42,7 @@ class Signal_handler_thread : Thread, Lock
 
 		void entry()
 		{
-			PLOG("[lj][Signal_handler_thread::entry] Constructing signal_source");
+			PLOG("[cap_cr][Signal_handler_thread::entry] Constructing signal_source");
 			raw("cap_cr|STAGE|Signal_handler_thread::entry|");
 
 			_signal_source.construct(env()->pd_session()->alloc_signal_source());
@@ -60,7 +60,7 @@ class Signal_handler_thread : Thread, Lock
 		Signal_handler_thread(Env &env)
 		: Thread(env, "signal handler", STACK_SIZE), Lock(Lock::LOCKED)
 		{
-			PLOG("[lj][Signal_handler_thread::ctor] Starting signal handler thread...");
+			PLOG("[cap_cr][Signal_handler_thread::ctor] Starting signal handler thread...");
 			raw("cap_cr|STAGE|Signal_handler_thread::ctor|");
 
 			start();
@@ -106,7 +106,7 @@ namespace Genode {
 	void init_signal_thread(Env &env) __attribute__((weak));
 	void init_signal_thread(Env &env)
 	{
-		PLOG("[lj][signal.cc::init_signal_thread]");
+		PLOG("[cap_cr][signal.cc::init_signal_thread]");
 		raw("cap_cr|STAGE|init_signal_thread|");
 		signal_handler_thread().construct(env);
 	}

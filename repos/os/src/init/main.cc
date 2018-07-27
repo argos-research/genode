@@ -213,7 +213,7 @@ class Init::Child_registry : public Name_registry, Child_list
 			Genode::List_element<Child> *curr = first();
 			for (; curr; curr = curr->next())
 			{
-				Genode::log("[lj] Starting '", curr->object()->name(), "'...");
+				Genode::log("[cap_cr] Starting '", curr->object()->name(), "'...");
 				curr->object()->start();
 			}
 		}
@@ -354,7 +354,7 @@ int main(int, char **)
 					// lj
 					char name[64];
 					start_node.attribute("name").value(name, sizeof(name));
-				//	log("[lj] Creating child \"", name, "\"...");
+				//	log("[cap_cr] Creating child \"", name, "\"...");
 					log("Creating child:");
 					log((const char *)name); // method for non-const char* is deleted
 

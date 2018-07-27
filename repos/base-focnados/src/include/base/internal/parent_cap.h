@@ -33,7 +33,7 @@ namespace Genode {
 	{
 		unsigned long const local_name = _parent_cap;
 
-		Genode::raw("[lj] Inserting PARENT_CAP (", Hex(local_name), ", ", Hex(Fiasco::PARENT_CAP), ")");
+		Genode::raw("[cap_cr] Inserting PARENT_CAP (", Hex(local_name), ", ", Hex(Fiasco::PARENT_CAP), ")");
 		static Cap_index *i = cap_map()->insert(local_name,
 		                                        Fiasco::PARENT_CAP);
 		/*

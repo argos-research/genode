@@ -83,7 +83,7 @@ Rpc_entrypoint::Rpc_entrypoint(Pd_session *pd_session, size_t stack_size,
 		activate();
 
 	_exit_cap = manage(&_exit_handler);
-	log("[lj][Rpc_entrypoint::ctor] _exit_cap = ", Hex(_exit_cap.local_name()));
+	log("[cap_cr][Rpc_entrypoint::ctor] _exit_cap = ", Hex(_exit_cap.local_name()));
 }
 
 
@@ -95,7 +95,7 @@ Rpc_entrypoint::~Rpc_entrypoint()
 	 */
 	_delay_start.unlock();
 
-//	log("[lj][Rpc_entrypoint::~Rpc_entrypoint] dissolving exit handler ", Hex(_exit_cap.local_name()));
+//	log("[cap_cr][Rpc_entrypoint::~Rpc_entrypoint] dissolving exit handler ", Hex(_exit_cap.local_name()));
 
 	/* leave server loop */
 	_exit_cap.call<Exit::Rpc_exit>();

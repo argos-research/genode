@@ -109,7 +109,7 @@ class Genode::Pd_session_component : public Rpc_object<Pd_session>
 			_stack_area(thread_ep, _md_alloc, pager_ep, 0, stack_area_virtual_size()),
 			_linker_area(thread_ep, _md_alloc, pager_ep, 0, LINKER_AREA_SIZE)
 		{
-			log("[lj][core][Pd_session_component::ctor]");
+			log("[cap_cr][core][Pd_session_component::ctor]");
 		}
 
 		/**
@@ -146,7 +146,7 @@ class Genode::Pd_session_component : public Rpc_object<Pd_session>
 
 		Signal_source_capability alloc_signal_source() override
 		{
-			log("[lj][core][Pd_session_component::alloc_signal_source]");
+			log("[cap_cr][core][Pd_session_component::alloc_signal_source]");
 
 			try {
 				return _signal_broker.alloc_signal_source(); }
@@ -160,7 +160,7 @@ class Genode::Pd_session_component : public Rpc_object<Pd_session>
 		Signal_context_capability
 		alloc_context(Signal_source_capability sig_rec_cap, unsigned long imprint) override
 		{
-			log("[lj][core][Pd_session_component::alloc_context]");
+			log("[cap_cr][core][Pd_session_component::alloc_context]");
 
 			try {
 				return _signal_broker.alloc_context(sig_rec_cap, imprint); }
@@ -178,7 +178,7 @@ class Genode::Pd_session_component : public Rpc_object<Pd_session>
 
 		Native_capability alloc_rpc_cap(Native_capability ep) override
 		{
-			log("[lj][core][Pd_session_component::alloc_rpc_cap] ", _label.string);
+			log("[cap_cr][core][Pd_session_component::alloc_rpc_cap] ", _label.string);
 
 			try {
 				return _rpc_cap_factory.alloc(ep); }

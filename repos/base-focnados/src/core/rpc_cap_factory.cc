@@ -67,7 +67,7 @@ void Cap_mapping::map(Fiasco::l4_cap_idx_t task)
 	if (!local.valid() || !Fiasco::Capability::valid(remote))
 		return;
 
-//	log("[lj][core][Cap_mapping::map] mapping local: ", Hex(local.local_name()), ", kcap: ", Hex(local.data()->kcap()), " remote: ", Hex(remote) , " to task: ", Hex(task));
+//	log("[cap_cr][core][Cap_mapping::map] mapping local: ", Hex(local.local_name()), ", kcap: ", Hex(local.data()->kcap()), " remote: ", Hex(remote) , " to task: ", Hex(task));
 
 	l4_msgtag_t tag = l4_task_map(task, L4_BASE_TASK_CAP,
 	                              l4_obj_fpage(local.data()->kcap(), 0, L4_FPAGE_RWX),
@@ -117,7 +117,7 @@ Native_capability Rpc_cap_factory::alloc(Native_capability ep)
 			return cap;
 		}
 
-		log("[lj][core][Rpc_cap_factory::alloc] Creating gate '", Hex(id), "' kcap: ", Hex(idx->kcap()), " thread: ", Hex(ref->pt()->thread().local.data()->id()), " ", ref->pt()->name());
+		log("[cap_cr][core][Rpc_cap_factory::alloc] Creating gate '", Hex(id), "' kcap: ", Hex(idx->kcap()), " thread: ", Hex(ref->pt()->thread().local.data()->id()), " ", ref->pt()->name());
 		l4_msgtag_t tag = l4_factory_create_gate(L4_BASE_FACTORY_CAP,
 		                                         idx->kcap(),
 		                                         ref->pt()->thread().local.data()->kcap(), id);
